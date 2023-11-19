@@ -12,6 +12,34 @@ services:
     networks:
       - web-proxy
 
+  qbittorrent:
+    container_name: qbittorrent
+    image: ghcr.io/hotio/qbittorrent
+    restart: unless-stopped
+#    ports:
+#      - "8080:8080"
+#      - "8118:8118"
+    environment:
+      - TZ=Etc/UTC
+      - VPN_ENABLED=true
+      - VPN_CONF=wg0
+#      - VPN_ADDITIONAL_PORTS
+      - PRIVOXY_ENABLED=false
+    volumes:
+      - $APPDATA/qbittorrent:/config
+      - $STREAMING/downloads:/data
+    cap_add:
+      - NET_ADMIN
+    sysctls:
+      - net.ipv4.conf.all.src_valid_mark=1
+      - net.ipv6.conf.all.disable_ipv6=0
+      - net.ipv6.conf.default.disable_ipv6=0
+      - net.ipv6.conf.lo.disable_ipv6=0
+    networks:
+      - web-proxy
+    devices:
+      - /dev/net/tun
+
 networks:
   web-proxy:
     external: true
