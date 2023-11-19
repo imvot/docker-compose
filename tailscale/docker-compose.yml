@@ -1,0 +1,13 @@
+services:
+  tailscale:
+    container_name: tailscale
+    volumes:
+      - $APPDATA/tailscale:/var/lib/tailscale
+    network_mode: host
+    environment:
+      - TS_SOCKET=/var/run/tailscale/tailscaled.sock
+      - TS_TAILSCALED_EXTRA_ARGS=--state=/var/lib/tailscale/tailscale.state
+    image: tailscale/tailscale:latest
+    restart: unless-stopped
+    devices:
+      - /dev/net/tun
