@@ -1,3 +1,11 @@
 http://adguard.box {
     reverse_proxy * http://adguard-home:3000
 }
+
+http://tower.box {
+    reverse_proxy * http://10.0.0.49:8080
+}
+
+http://jellyfin.box {
+    reverse_proxy * http://jellyfin:8096
+}
