@@ -1,0 +1,17 @@
+services:
+  jellyfin:
+    image: jellyfin/jellyfin
+    container_name: jellyfin
+    volumes:
+      - $APPDATA/jellyfin:/config
+      - $APPDATA/jellyfin:/cache
+      - $MEDIA/media:/media
+    restart: unless-stopped
+    device:
+      - /dev/dri:/dev/dri
+    networks:
+      - web-proxy
+
+networks:
+  web-proxy:
+    external: true
