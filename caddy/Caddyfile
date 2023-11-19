@@ -1,0 +1,3 @@
+http://adguard.box {
+    reverse_proxy * http://adguard-home:3000
+}

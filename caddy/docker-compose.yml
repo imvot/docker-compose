@@ -1,0 +1,18 @@
+services:
+  caddy:
+    image: caddy:latest
+    container_name: caddy
+    restart: unless-stopped
+    networks:
+      - web-proxy
+    volumes:
+      - $APPDATA/caddy/Caddyfile:/etc/caddy/Caddyfile
+      - $APPDATA/caddy/data:/data
+      - $APPDATA/caddy/config:/config
+    ports:
+      - 80:80
+      - 80:80/udp
+
+networks:
+  web-proxy:
+    external: true
