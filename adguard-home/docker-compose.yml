@@ -1,0 +1,19 @@
+services:
+  adguard-home:
+    container_name: adguard-home
+    image: adguard/adguardhome:latest
+    volumes:
+      - $APPDATA/adguard-home/work:/opt/adguardhome/work
+      - $APPDATA/adguard-home/conf:/opt/adguardhome/conf
+    ports:
+      - 127.0.0.1:53:53
+      - 127.0.0.1:53:53/udp
+      - 3000:3000
+    networks:
+      - web-proxy
+    restart: unless-stopped
+
+networks:
+  web-proxy:
+    external: true
+
