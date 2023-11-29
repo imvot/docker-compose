@@ -18,3 +18,4 @@ services:
 networks:
   web-proxy:
     external: true
+  vikunja:

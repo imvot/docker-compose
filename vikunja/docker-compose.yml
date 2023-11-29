@@ -1,0 +1,62 @@
+services:
+  vikunja-db:
+    container_name: vikunja-db
+    image: mariadb:10
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    environment:
+      MYSQL_ROOT_PASSWORD: $DB_ROOT_PW
+      MYSQL_USER: $DB_USER
+      MYSQL_PASSWORD: $DB_PW
+      MYSQL_DATABASE: vikunja
+    volumes:
+      - $APPDATA/vikunja/db:/var/lib/mysql
+    restart: unless-stopped
+    networks:
+      - vikunja
+
+  vikunja-cache:
+    container_name: vikunja-cache
+    image: redis
+    restart: unless-stopped
+    networks:
+      - vikunja
+
+  vikunja-api:
+    container_name: vikunja-api
+    image: vikunja/api
+    environment:
+      VIKUNJA_DATABASE_HOST: vikunja-db
+      VIKUNJA_DATABASE_PASSWORD: $DB_PW
+      VIKUNJA_DATABASE_TYPE: mysql
+      VIKUNJA_DATABASE_USER: $DB_USER
+      VIKUNJA_DATABASE_DATABASE: vikunja
+      VIKUNJA_SERVICE_JWTSECRET: $JWT_SECRET
+      VIKUNJA_SERVICE_FRONTENDURL: http://vikunja.box
+      VIKUNJA_SERVICE_ENABLEREGISTRATION: false
+      VIKUNJA_REDIS_ENABLED: 1
+      VIKUNJA_REDIS_HOST: 'vikunja-cache:6379'
+      VIKUNJA_CACHE_ENABLED: 1
+      VIKUNJA_CACHE_TYPE: redis
+    volumes:
+      - $APPDATA/vikunja/backend:/app/vikunja/files
+    depends_on:
+      - vikunja-db
+      - vikunja-cache
+    restart: unless-stopped
+    networks:
+      - web-proxy
+      - vikunja
+
+  vikunja-frontend:
+    container_name: vikunja-frontend
+    image: vikunja/frontend
+    restart: unless-stopped
+    depends_on:
+      - vikunja-api
+    networks:
+      - web-proxy
+
+networks:
+  web-proxy:
+    external: true
+  vikunja:

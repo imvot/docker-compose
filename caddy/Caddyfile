@@ -37,3 +37,10 @@ http://nextcloud.box {
 	}
 	encode gzip
 }
+
+http://vikunja.box {
+    reverse_proxy /api/* vikunja-api:3456
+    reverse_proxy /.well-known/* vikunja-api:3456
+    reverse_proxy /dav/* vikunja-api:3456
+    reverse_proxy vikunja-frontend:80
+}
