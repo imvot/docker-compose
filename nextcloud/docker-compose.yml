@@ -1,0 +1,71 @@
+services:
+  nextcloud:
+    image: nextcloud:stable-fpm
+    container_name: nextcloud
+    restart: unless-stopped
+    networks:
+      - web-proxy
+      - nextcloud
+    depends_on:
+      - nextcloud-db
+      - nextcloud-cache
+    environment:
+      NEXTCLOUD_DATA_DIR: /var/nextdata
+      NEXTCLOUD_ADMIN_USER: $NC_ADMIN
+      NEXTCLOUD_ADMIN_PASSWORD: $NC_ADMIN_PW
+      POSTGRES_HOST: nextcloud-db
+      POSTGRES_DB: nextcloud
+      POSTGRES_USER: $DB_USER
+      POSTGRES_PASSWORD: $DB_PW
+      REDIS_HOST: nextcloud-cache
+    volumes:
+        # the actual data of the Nextcloud:
+      - $NEXTDATA:/var/nextdata
+        # Main folder needed for updating:
+      - $APPDATA/nextcloud/var/www/html:/var/www/html
+        # local configuration
+      - $APPDATA/nextcloud/config:/var/www/html/config
+        # Custom settings for php fpm to make nextcloud work. The default settings resulted in the error:
+        # WARNING: [pool www] server reached pm.max_children setting (5), consider raising it
+      - $APPDATA/nextcloud/etc/www-custom.ini:/usr/local/etc/php-fpm.d/zz-custom.conf
+
+  nextcloud-cron:
+    image: nextcloud:stable-fpm
+    container_name: nextcloud-cron
+    restart: unless-stopped
+    volumes:
+      - $NEXTDATA:/var/nextdata
+      - $APPDATA/nextcloud/var/www/html:/var/www/html
+      - $APPDATA/nextcloud/config:/var/www/html/config
+    entrypoint: /cron.sh
+    depends_on:
+      - nextcloud
+    networks:
+      - nextcloud
+
+  nextcloud-db:
+    container_name: nextcloud-db
+    image: postgres:alpine
+    restart: unless-stopped
+    networks:
+      - nextcloud
+    environment:
+      POSTGRES_USER: $DB_USER
+      POSTGRES_PASSWORD: $DB_PW
+    volumes:
+      - $APPDATA/nextcloud/db:/var/lib/postgresql/data
+
+  nextcloud-cache:
+    container_name: nextcloud-cache
+    image: redis:alpine
+    restart: unless-stopped
+    networks:
+      - nextcloud
+    command: redis-server 
+
+networks:
+  web-proxy:
+    external: true
+    driver: bridge
+  nextcloud:
+    driver: bridge

@@ -9,3 +9,31 @@ http://tower.box {
 http://jellyfin.box {
     reverse_proxy * http://jellyfin:8096
 }
+
+http://nextcloud.box {
+	redir /.well-known/carddav /remote.php/dav 301
+	redir /.well-known/caldav /remote.php/dav 301
+
+    @forbidden {
+		path /.htaccess
+		path /data/*
+		path /config/*
+		path /db_structure
+		path /.xml
+		path /README
+		path /3rdparty/*
+		path /lib/*
+		path /templates/*
+		path /occ
+		path /console.php
+	}
+	respond @forbidden 404
+
+	file_server 
+	root * /nextcloud/var/www/html
+	php_fastcgi nextcloud:9000 {
+		root /var/www/html
+		env front_controller_active true
+	}
+	encode gzip
+}
