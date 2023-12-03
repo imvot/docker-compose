@@ -44,3 +44,7 @@ http://vikunja.box {
     reverse_proxy /dav/* vikunja-api:3456
     reverse_proxy vikunja-frontend:80
 }
+
+http://home.box {
+    reverse_proxy * http://homer:8080
+}

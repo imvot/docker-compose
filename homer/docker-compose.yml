@@ -1,0 +1,14 @@
+services:
+  homer:
+    container_name: homer
+    image: b4bz/homer
+    volumes:
+      - $APPDATA/homer:/www/assets
+    environment:
+      - INIT_ASSETS=1 # default
+    networks:
+      - web-proxy
+
+networks:
+  web-proxy:
+    external: true

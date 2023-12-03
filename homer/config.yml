@@ -1,0 +1,48 @@
+title: "App dashboard"
+subtitle: "Homer"
+logo: "assets/icons/homer.png"
+
+header: true 
+footer: false 
+
+columns: "3" 
+connectivityCheck: true 
+
+links:
+  - name: "Github"
+    icon: "fab fa-github"
+    url: "https://github.com/imvot/docker-compose"
+
+services:
+  - name: "Media"
+    icon: "fa-solid fa-photo-film"
+    items:
+      - name: "Jellyfin"
+        logo: "assets/icons/jellyfin.png"
+        subtitle: "Let's be couch potatoes together!"
+        url: "http://jellyfin.box"
+      - name: "Qbittorrent"
+        logo: "assets/icons/qbittorrent.png"
+        subtitle: "To download... linux isos"
+        url: "http://qbittorrent.box"
+  - name: "Work"
+    icon: "fa-solid fa-folder-open"
+    items:
+      - name: "Nextcloud"
+        logo: "assets/icons/nextcloud.png"
+        subtitle: "Some files over there!"
+        url: "http://nextcloud.box"
+      - name: "Vikunja"
+        logo: "assets/icons/vikunja.png"
+        subtitle: "So much to do..."
+        url: "http://vikunja.box"
+  - name: "System"
+    icon: "fa-solid fa-gears"
+    items:
+      - name: "Unraid"
+        logo: "assets/icons/unraid.png"
+        url: "http://tower.box"
+      - name: "Adguard"
+        logo: "assets/icons/adguardhome.png"
+        url: "http://adguard.box"
+
